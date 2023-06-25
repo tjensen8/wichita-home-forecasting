@@ -28,6 +28,14 @@ if __name__ == "__main__":
 
     market_data = fred.market_data_df()
 
+    # display target variable
+    market_data["House Price Index, Wichita"].plot()
+    plt.title("Index of Historical Home Prices, Wichita KS")
+    plt.ylabel("Index Value")
+    plt.xlabel("Timeline (Months)")
+    plt.savefig('./figures/house_price_history_ict.png')
+    plt.close()
+
     forecast_months = [1, 2, 3, 4, 5, 6]
     results = [market_data["House Price Index, Wichita"][-1]]
 
