@@ -8,7 +8,8 @@ import os
 
 
 def get_bls_key():
-    return load_dotenv()["BLS_KEY"]
+    get_environment_variables()
+    return os.getenv("BLS_KEY")
 
 
 def get_environment_variables():
@@ -30,9 +31,6 @@ def load_yaml(dir: str):
     Returns:
         dict: YAML data as a dictionary.
     """
-    if os.path.isdir(dir):
-        with open(dir, "r") as f:
-            yaml_f = yaml.safe_load()
-        return yaml_f
-    else:
-        raise ExceptionMessage(f"Directory {dir} is not a directory.")
+    with open(dir, "r") as f:
+        yaml_f = yaml.safe_load(f)
+    return yaml_f
