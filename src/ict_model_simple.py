@@ -11,21 +11,22 @@ from sklearn.ensemble import RandomForestRegressor
 
 from utils.environment_vars import load_yaml, get_bls_key
 from MarketData import FredQuery
+import os
+
 
 
 # will be forcasting housing prices in wichita to anticipate housing moves
 # over the next 12 months
 
 if __name__ == "__main__":
-    series_ids = load_yaml("./bls_series.yaml")
-    Fred = FredQuery(get_bls_key())
+    series_ids = load_yaml(os.path.abspath("./bls_series.yaml"))
+    fred = FredQuery(get_bls_key())
 
-    market_data = Fred.get_market_data_df(series_ids)
+    fred.get_market_data_df(series_ids['BLS_SERIES'], resample="Q")
 
-    market_data = market_data.resample("Q").mean()
-    market_data.dropna(inplace=True)
+    fred.plot_market_data()
 
-    market_data.plot_market_data()
+    market_data = fred.market_data_df()
 
     forecast_months = [1, 2, 3, 4, 5, 6]
     results = [market_data["House Price Index, Wichita"][-1]]
@@ -37,7 +38,7 @@ if __name__ == "__main__":
         ].shift(months)
         market_data.dropna(inplace=True)
 
-        market_data.corr()["House Price Index, Wichita"]
+        print(market_data.corr()["House Price Index, Wichita"])
 
         scaler = StandardScaler()
 
@@ -57,8 +58,8 @@ if __name__ == "__main__":
         train_score_r2 = lr.score(x_train, y_train)
         train_score_mae = mean_absolute_error(y_train, y_pred_train)
         print("Training Scores:")
-        print("R2: ", train_score_r2.round(3))
-        print("MAE: ", train_score_mae.round(3))
+        print("R2: ", np.round(train_score_r2, 3))
+        print("MAE: ", np.round(train_score_mae, 3))
 
         # testing
         y_pred_test = lr.predict(x_test)
@@ -66,8 +67,8 @@ if __name__ == "__main__":
         test_score_r2 = lr.score(x_test, y_test)
         train_score_mae = mean_absolute_error(y_test, y_pred_test)
         print("Test Scores")
-        print("R2: ", test_score_r2.round(3))
-        print("MAE: ", train_score_mae.round(3))
+        print("R2: ", np.round(test_score_r2, 3))
+        print("MAE: ", np.round(train_score_mae,3))
 
         residuals = y_test - y_pred_test
 
@@ -75,14 +76,17 @@ if __name__ == "__main__":
         plt.title(f"Residuals - {months} Forecast")
         plt.xlabel("Residuals")
         plt.ylabel("Prediction")
-        plt.show()
+        plt.savefig(f'./figures/residuals-{months}-month-forecast.png')
+        plt.close()
 
         print("\nPrediction: ", lr.predict(X.iloc[-1].values.reshape([1, -1])))
         results.append(lr.predict(X.iloc[-1].values.reshape([1, -1])))
 
     results = pd.DataFrame(results)
     plt.title("Forecasts")
-    plt.plot(results.pct_change() * 100)
-    plt.ylabel("Percent Change")
+    #plt.plot(results.pct_change() * 100)
+    plt.plot(results)
+    plt.ylabel("Forecasted Index Values")
     plt.xlabel("Months Forecasted Out")
-    plt.show()
+    plt.savefig('./figures/forecast_results.png')
+    plt.close()
