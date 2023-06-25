@@ -6,6 +6,7 @@ import pandas as pd
 from fredapi import Fred
 from typing import AnyStr, Dict, List
 import logging
+import matplotlib.pyplot as plt
 
 from utils import logging_config
 
@@ -30,10 +31,11 @@ class FredQuery:
             fred = Fred(self.api_key)
             fred.get_series("SP500")
             logging.info("Successfully Accessed API")
+            return fred
         except Exception as e:
             logging.error(f"[!ERROR!] Unable to Query Fred API. \n Error: \n {e}")
 
-    def _format_bls_data(self, resample: str = None):
+    def _format_bls_data(self, resample:str):
         self.market_data.index = pd.to_datetime(self.market_data.index)
 
         if type(resample) != type(None):
@@ -42,9 +44,9 @@ class FredQuery:
 
     def get_market_data_df(
         self,
-        series_data: Dict[AnyStr],
+        series_data: dict,
         rename_columns: bool = True,
-        resample: str = None,
+        resample: str = 'M',
     ):
         """Retrieves relevant series from the FRED dataset and returns it as a
         pandas dataframe for easy analysis.
@@ -75,9 +77,13 @@ class FredQuery:
             # name the columns the desired custom names
             self.market_data.columns = keys_pulled
 
-        self._format_bls_data()
+        self._format_bls_data(resample=resample)
 
+    
+    def market_data_df(self):
         return self.market_data
 
     def plot_market_data(self):
         pd.plotting.scatter_matrix(self.market_data, figsize=(15, 10))
+        plt.savefig('market_data_scatter_matrix.png')
+        plt.close()
