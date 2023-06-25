@@ -1,0 +1,8 @@
+pandas
+numpy
+matplotlib
+seaborn
+fredapi
+scikit-learn
+python-dotenv
+pyyaml
