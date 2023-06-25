@@ -4,9 +4,11 @@ Extremely simple forecasting model for evaluating home price trends in Wichita, 
 
 I used this several years ago to do a quick evaluation if the Wichita housing market would go up or down during COVID. The results have been updated for the data as of May 2023. 
 
-![alt text](src/figures/forecast_results.png)
+![Modeling forecasting results](src/figures/forecast_results.png)
 
-As you can see, based on the market data used, the model is currently predicting a rather severe downward trend in the market. However, given the exponential growth of the housing prices due to other factors beyond the market data originally contained in this model, this is probably gross overestimation of the market correction. 
+As you can see, based on the market data used, the model is currently predicting a rather severe downward trend in the market. However, given the exponential growth of the housing prices due to other factors beyond the market data originally contained in this model (see the recent market trend below), this is probably gross overestimation of the market correction. 
+
+![Wichita Historical Home Price Trend](src/figures/house_price_history_ict.png)
 
 The last time that I used the model, the housing prices were behaving within the norm, without large growth (aprox. 2020/2021).
 
