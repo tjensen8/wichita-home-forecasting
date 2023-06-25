@@ -1,5 +1,5 @@
 import logging
-from environment_vars import get_environment_variables
+from utils.environment_vars import get_environment_variables
 
 
 def set_logging_config():
